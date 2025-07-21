@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solar System 3D - Three.js</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <button id="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+  <div id="container">
+    <div id="controls">
+      <button class="close-sidebar" aria-label="Close sidebar" style="display:none;">✕</button>
+      <br>
+      <h2>Planet Speed Controls</h2>
+      <div id="top-controls" style="display: flex; align-items: center; gap: 1rem;">
+        <button id="pause-btn">Pause</button>
+        <button id="theme-toggle">🌙</button>
+      </div>
+      <div id="sliders"></div>
+    </div>
+    <div id="sidebar-backdrop"></div>
+    <div id="canvas-container" style="position:relative;">
+      <!-- Three.js will render here -->
+      <div id="tooltip" style="display:none; position:absolute;"></div>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html> 
