@@ -1,15 +1,23 @@
 // --- Three.js Solar System ---
 
-// Planet data: [name, color, size, distance from sun, default speed]
+// Celestial body data: [name, color, size, distance from sun, default speed, description]
+const SUN = {
+  name: 'Sun',
+  color: 0xffcc00,
+  size: 2.5,
+  distance: 0,
+  speed: 0,
+  description: 'The Sun is the star at the center of the Solar System. It is a nearly perfect sphere of hot plasma and the source of most energy for life on Earth.'
+};
 const PLANETS = [
-  { name: 'Mercury', color: 0xb1b1b1, size: 0.38, distance: 6, speed: 0.04 },
-  { name: 'Venus',   color: 0xeccc9a, size: 0.95, distance: 8, speed: 0.015 },
-  { name: 'Earth',   color: 0x2a6aff, size: 1,    distance: 10, speed: 0.01 },
-  { name: 'Mars',    color: 0xff6f2a, size: 0.53, distance: 12, speed: 0.008 },
-  { name: 'Jupiter', color: 0xf4e2b6, size: 2,    distance: 15, speed: 0.004 },
-  { name: 'Saturn',  color: 0xf7e7b6, size: 1.7,  distance: 18, speed: 0.003 },
-  { name: 'Uranus',  color: 0x7defff, size: 1.4,  distance: 21, speed: 0.002 },
-  { name: 'Neptune', color: 0x4666ff, size: 1.3,  distance: 24, speed: 0.0015 },
+  { name: 'Mercury', color: 0xb1b1b1, size: 0.38, distance: 6, speed: 0.04, description: 'Mercury is the closest planet to the Sun and the smallest in the Solar System.' },
+  { name: 'Venus',   color: 0xeccc9a, size: 0.95, distance: 8, speed: 0.015, description: 'Venus is the second planet from the Sun and has a thick, toxic atmosphere.' },
+  { name: 'Earth',   color: 0x2a6aff, size: 1,    distance: 10, speed: 0.01, description: 'Earth is the third planet from the Sun and the only astronomical object known to support life.' },
+  { name: 'Mars',    color: 0xff6f2a, size: 0.53, distance: 12, speed: 0.008, description: 'Mars is the fourth planet from the Sun and is often called the "Red Planet".' },
+  { name: 'Jupiter', color: 0xf4e2b6, size: 2,    distance: 15, speed: 0.004, description: 'Jupiter is the largest planet in the Solar System and is known for its Great Red Spot.' },
+  { name: 'Saturn',  color: 0xf7e7b6, size: 1.7,  distance: 18, speed: 0.003, description: 'Saturn is the sixth planet from the Sun and is famous for its prominent ring system.' },
+  { name: 'Uranus',  color: 0x7defff, size: 1.4,  distance: 21, speed: 0.002, description: 'Uranus is the seventh planet from the Sun and has a blue-green color due to methane in its atmosphere.' },
+  { name: 'Neptune', color: 0x4666ff, size: 1.3,  distance: 24, speed: 0.0015, description: 'Neptune is the eighth and farthest known planet from the Sun in the Solar System.' },
 ];
 
 let scene, camera, renderer, sun;
@@ -51,6 +59,7 @@ function init() {
   const sunMat = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
   sun = new THREE.Mesh(sunGeo, sunMat);
   scene.add(sun);
+  sun.userData.isSun = true;
 
   // Sun Glow (soft radial sprite)
   const canvas = document.createElement('canvas');
@@ -143,6 +152,9 @@ function createSliders() {
   PLANETS.forEach((planet, i) => {
     const group = document.createElement('div');
     group.className = 'slider-group';
+    if (planet.name === 'Neptune') {
+      group.classList.add('neptune-slider');
+    }
     const label = document.createElement('label');
     label.textContent = planet.name;
     label.htmlFor = `slider-${i}`;
@@ -191,10 +203,18 @@ function setupTooltip() {
     };
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(planetMeshes);
+    const intersects = raycaster.intersectObjects([sun, ...planetMeshes]);
     if (intersects.length > 0) {
-      const idx = intersects[0].object.userData.planetIndex;
-      tooltip.textContent = PLANETS[idx].name;
+      let name, description;
+      if (intersects[0].object.userData.isSun) {
+        name = SUN.name;
+        description = SUN.description;
+      } else {
+        const idx = intersects[0].object.userData.planetIndex;
+        name = PLANETS[idx].name;
+        description = PLANETS[idx].description;
+      }
+      tooltip.innerHTML = `<strong>${name}</strong><br><span style='font-size:0.97em;'>${description}</span>`;
       tooltip.style.display = 'block';
       tooltip.style.left = (event.clientX - rect.left + 10) + 'px';
       tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
@@ -295,6 +315,35 @@ function animate() {
   renderer.render(scene, camera);
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  // const sidebarToggle = document.getElementById('sidebar-toggle');
+  // const controls = document.getElementById('controls');
+  // const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+  // const closeSidebar = document.querySelector('.close-sidebar');
+
+  // function openSidebar() {
+  //   controls.classList.add('open');
+  //   sidebarBackdrop.style.display = 'block';
+  //   closeSidebar.style.display = 'block';
+  // }
+
+  // function closeSidebarFunc() {
+  //   controls.classList.remove('open');
+  //   sidebarBackdrop.style.display = 'none';
+  //   closeSidebar.style.display = 'none';
+  // }
+
+  // sidebarToggle.addEventListener('click', openSidebar);
+  // sidebarBackdrop.addEventListener('click', closeSidebarFunc);
+  // closeSidebar.addEventListener('click', closeSidebarFunc);
+
+  // window.addEventListener('resize', () => {
+  //   if (window.innerWidth > 700) {
+  //     closeSidebarFunc();
+  //   }
+  // });
+});
+
 function setupSidebarToggle() {
   const sidebar = document.getElementById('controls');
   const toggleBtn = document.getElementById('sidebar-toggle');
@@ -331,5 +380,4 @@ function setupSidebarToggle() {
 }
 
 init();
-setupSidebarToggle();
-animate(); 
+animate();

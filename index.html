@@ -4,9 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Solar System 3D - Three.js</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='gold' stroke='orange' stroke-width='8'/></svg>">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/controls/OrbitControls.js"></script>
+  <style>
+    @media (min-width: 1200px) {
+      #controls {
+        display: none; /* Hides controls on desktop */
+      }
+    }
+
+    #controls {
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 70px;
+      min-width: 0;
+      max-width: 100vw;
+      border-radius: 0 0 18px 18px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0.7rem 0.7rem 0.7rem 0.7rem;
+      gap: 1rem;
+      background: rgba(32,36,56,0.98);
+      box-shadow: 0 2px 12px rgba(20,20,40,0.22);
+      z-index: 200;
+      transition: none;
+      transform: none;
+      opacity: 1;
+      backdrop-filter: blur(8px);
+      overflow-x: auto;
+      overflow-y: visible;
+      max-height: none;
+    }
+  </style>
 </head>
 <body>
   <button id="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
@@ -22,11 +57,34 @@
       <div id="sliders"></div>
     </div>
     <div id="sidebar-backdrop"></div>
-    <div id="canvas-container" style="position:relative;">
+    <div id="canvas-container">
       <!-- Three.js will render here -->
       <div id="tooltip" style="display:none; position:absolute;"></div>
     </div>
   </div>
+  <div id="nav-card" style="position:fixed; bottom:24px; right:24px; z-index:999; background:rgba(32,36,56,0.97); color:#fff; border-radius:10px; box-shadow:0 2px 12px rgba(20,20,40,0.18); padding:0.7rem 1rem 0.7rem 1rem; max-width:220px; font-size:0.97rem; line-height:1.5;">
+    <button id="close-nav-card" aria-label="Close instructions" style="position:absolute; top:10px; right:12px; background:none; border:none; color:#fff; font-size:1.3rem; cursor:pointer;">✕</button>
+    <strong>How to Explore the Solar System:</strong>
+    <ul style="margin:0.7em 0 0 1.2em; padding:0;">
+      <li>Use the top bar to control the planets speed</li>
+      <li>Scroll or pinch to <b>zoom in/out</b>.</li>
+      <li>Click a planet to <b>zoom in</b> on it.</li>
+      <li>Click empty space to <b>reset view</b>.</li>
+      <li>Use the top bar to <b>pause</b> or <b>change theme</b>.</li>
+      <li>Hover onto planets to see info about them</li>
+    </ul>
+  </div>
   <script src="main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var closeBtn = document.getElementById('close-nav-card');
+      if (closeBtn) {
+        closeBtn.onclick = function() {
+          var card = document.getElementById('nav-card');
+          if (card) card.style.display = 'none';
+        };
+      }
+    });
+  </script>
 </body>
-</html> 
+</html>
